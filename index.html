@@ -1,0 +1,532 @@
+<!DOCTYPE html><html lang="en" class="scroll-smooth light"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Web IDE — Build Websites On Your Phone</title>
+    <meta name="description" content="Web IDE — a fast, friendly way to build websites on your phone. Try the live editor, explore features, and get it on App store.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc',
+                            400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1',
+                            800: '#075985', 900: '#0c4a6e',
+                        },
+                        accent: {
+                            light: '#2dd4bf', // Teal
+                            DEFAULT: '#0d9488',
+                            dark: '#115e59',
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['Space Grotesk', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Prevent flash of unstyled theme
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.documentElement.classList.remove('light');
+            } else if (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                // Auto-detect system preference if no save
+                document.documentElement.classList.remove('light');
+            }
+        })();
+    </script>
+<link rel="stylesheet" href="pages/docs/style.css"><link rel="stylesheet" href="pages/blog/style.css"><link rel="stylesheet" href="pages/blog/styles/post.css"><link rel="stylesheet" href="pages/privacy/style.css"><link rel="stylesheet" href="pages/about/style.css"><link rel="stylesheet" href="pages/contact/style.css"><link rel="stylesheet" href="pages/terms/style.css"></head>
+<body class="font-body text-slate-50 bg-main antialiased selection:bg-brand-500/30 selection:text-brand-200 overflow-x-hidden">
+    
+    <!-- Dynamic Background -->
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+         <!-- Noise -->
+        <div class="absolute inset-0 opacity-[0.04] mix-blend-overlay" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%221%22/%3E%3C/svg%3E');"></div>
+        <!-- Blobs -->
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-accent-light rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-50 transition-all duration-300" id="mainHeader">
+        <div class="mx-auto max-w-7xl px-6">
+            <div class="flex items-center justify-between h-20">
+                <a href="#" id="mainLogoLink" class="flex items-center gap-3 group relative z-50">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-brand-500 blur-lg opacity-40 group-hover:opacity-60 transition duration-500"></div>
+                        <img src="assets/icon/webidesqaureicon.jpg" alt="Web IDE" class="relative w-10 h-10 rounded-xl border border-white/10 shadow-xl group-hover:scale-105 transition duration-300">
+                    </div>
+                    <span class="text-xl font-heading font-bold tracking-tight text-white">Web IDE</span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-1 p-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl shadow-lg">
+                    <a href="#features" class="px-5 py-2 text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 rounded-full transition">Features</a>
+                    <a href="#demo" class="px-5 py-2 text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 rounded-full transition">Live Demo</a>
+                    <a href="pages/blog/index.html" class="px-5 py-2 text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 rounded-full transition">Blog</a>
+                    <a href="pages/docs/index.html" class="px-5 py-2 text-sm font-medium text-white/70 hover:text-brand-400 hover:bg-white/10 rounded-full transition">Documentation</a>
+                </nav>
+
+                <div class="flex items-center gap-3">
+                    <a target="_blank" rel="noopener" href="http://bit.ly/downloadwebide" class="hidden sm:inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white shadow-[0_0_20px_-5px_rgba(14,165,233,0.5)] transition-all hover:-translate-y-0.5 border border-white/10">
+                        <span>Get App</span>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </a>
+                    <!-- Mobile Toggle -->
+                    <button id="mobileMenuToggle" class="md:hidden p-2 text-white/70 hover:text-white transition">
+                         <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[60] hidden opacity-0 transition-opacity duration-300">
+        <div class="absolute top-6 right-6">
+            <button id="closeMobileMenuButton" class="p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="h-full flex flex-col items-center justify-center gap-8 p-6">
+            <nav class="flex flex-col items-center gap-8 text-3xl font-heading font-bold text-white/90">
+                <a href="#features" class="hover:text-brand-400 transition transform hover:scale-110" data-menu-link="">Features</a>
+                <a href="#demo" class="hover:text-brand-400 transition transform hover:scale-110" data-menu-link="">Live Demo</a>
+                <a href="pages/blog/index.html" class="hover:text-brand-400 transition transform hover:scale-110">Blog</a>
+                <a href="pages/docs/index.html" class="hover:text-brand-400 transition transform hover:scale-110">Documentation</a>
+                <a href="pages/about/index.html" class="hover:text-brand-400 transition transform hover:scale-110">About</a>
+                <a href="pages/contact/index.html" class="hover:text-brand-400 transition transform hover:scale-110">Contact</a>
+            </nav>
+            <div class="flex flex-col w-full max-w-xs gap-4 mt-8">
+                <a href="https://apps.apple.com/us/app/web-ide/id6751813522" target="_blank" class="flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-white text-black font-bold text-lg hover:scale-105 transition shadow-xl">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.8-1.31.02-2.3-1.23-3.14-2.47-1.71-2.53-2.97-6.87-.09-9.66 1.36-1.34 3.21-1.61 4.3-1.59 1.27.02 2.16.87 2.86.87.67 0 2-.9 3.42-.85 1.14.05 2.23.47 3.04 1.22-2.69 1.68-2.22 5.76.52 6.97zM13 5c.66-1.04 1.18-2.43 1.07-3.86-1.16.09-2.74.84-3.6 1.84-.75.86-1.39 2.28-1.21 3.75 1.29.1 2.6-.65 3.74-1.73z"></path></svg>
+                    App Store
+                </a>
+                <a href="https://web-ide.en.uptodown.com/android/download" target="_blank" class="flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-white/10 border border-white/20 font-bold text-lg hover:bg-white/20 transition backdrop-blur-md">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9996.4482.9996.9993s-.4486.9997-.9996.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9996.4482.9996.9993s-.4486.9997-.9996.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0225 3.503c-1.6705-.765-3.5555-1.204-5.5984-1.204-2.0428 0-3.9279.439-5.5984 1.204l-2.0225-3.503a.416.416 0 00-.5676-.1521.416.416 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.344 14.6589.344 18.7174h23.312c0-4.0585-2.3449-7.5307-6.8568-9.396z"></path></svg>
+                    Android
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative pt-36 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+        <!-- Hero Content -->
+        <div class="container mx-auto max-w-7xl px-6 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="hero-text">
+                    <div class="version-badge inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-medium uppercase tracking-wider mb-8 shadow-lg backdrop-blur-sm">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+                        </span>
+                        <span class="version-badge-text">v8.1 Available Now</span>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-heading font-bold leading-[1.1] tracking-tight mb-6 animate-fade-up opacity-0" style="animation-delay: 0.2s">
+                        Code on mobile <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-accent-light to-purple-400 animate-gradient-x">without limits.</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-white/60 mb-10 max-w-lg leading-relaxed animate-fade-up opacity-0" style="animation-delay: 0.3s">
+                        The most powerful mobile web editor. Prompt, code, live preview, and Ship Easily.
+                    </p>
+                    <div class="flex flex-wrap justify-center sm:justify-start items-center gap-4 animate-fade-up opacity-0" style="animation-delay: 0.4s">
+                        <a href="pages/docs/index.html" class="group relative px-6 py-4 h-[60px] bg-white text-black rounded-2xl font-bold text-lg transition hover:scale-[1.02] hover:shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-shimmer"></div>
+                            <span class="flex items-center gap-2 whitespace-nowrap">
+                                Install Now
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </span>
+                        </a>
+                        <a href="pages/blog/index.html" class="group relative px-6 py-4 h-[60px] bg-white/10 text-white border border-white/20 rounded-2xl font-bold text-lg transition hover:bg-white/20 backdrop-blur-md overflow-hidden">
+                            <span class="flex items-center gap-2 whitespace-nowrap">
+                                Blog
+                            </span>
+                        </a>
+                    </div>
+                    <!-- Floating Text for Offer Code -->
+                    <a href="#offer-code" id="scroll-to-offer" class="block text-center sm:text-left w-full mt-10 text-sm font-medium cursor-pointer text-white/40 hover:text-white transition animate-fade-up opacity-0" style="animation-delay: 0.5s">
+                        <span class="inline-block animate-bounce-y">Scroll to the bottom for Web IDE offer code ↓</span>
+                    </a>
+                </div>
+
+                <!-- Phone Mockup -->
+                <div class="relative animate-fade-up opacity-0 flex justify-center" style="animation-delay: 0.5s">
+                    <div id="phoneMockup" class="relative w-[300px] md:w-[320px] aspect-[9/19] bg-[#0a0a0a] rounded-[3rem] border-[8px] border-[#222] shadow-2xl overflow-hidden transform rotate-[-6deg] transition-transform duration-700 ease-out z-10 cursor-pointer">
+                         <!-- Notch -->
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 h-7 w-32 bg-[#222] rounded-b-xl z-20"></div>
+                        
+                        <!-- Screen Content -->
+                        <div class="h-full w-full bg-[#0f172a] flex flex-col font-mono">
+                            <!-- Header -->
+                            <div class="pt-10 pb-3 px-4 flex items-center justify-between bg-[#1e293b] border-b border-white/5">
+                                <div class="flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                                </div>
+                                <div class="text-[10px] text-white/40 uppercase tracking-widest">index.html</div>
+                            </div>
+                            <!-- Code Area -->
+                            <div class="flex-1 p-4 text-xs leading-relaxed overflow-hidden relative group bg-[#0b1120]">
+                                <div class="absolute left-4 top-4 bottom-4 w-[1px] bg-white/5"></div>
+                                <div class="pl-4 text-blue-300/90" id="heroTypewriter">
+                                    <!-- Typewriter content injected via JS -->
+                                </div>
+                            </div>
+                            <!-- Mini Preview Bar -->
+                            <div class="h-14 bg-[#1e293b] border-t border-white/5 flex items-center justify-around text-white/50">
+                                <div class="flex flex-col items-center gap-1 hover:text-brand-400 transition cursor-pointer">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                                </div>
+                                <div class="flex flex-col items-center gap-1 text-brand-400 cursor-pointer">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                                </div>
+                                <div class="flex flex-col items-center gap-1 hover:text-brand-400 transition cursor-pointer">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Glow behind phone -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-brand-500/40 to-accent-light/30 blur-3xl -z-10 rounded-full transform scale-110"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Features Section -->
+    <section id="features" class="py-24 md:py-32 relative">
+        <div class="container mx-auto max-w-7xl px-6">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-20 scroll-fade-in" data-scroll-delay="0">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-300 text-xs font-bold uppercase tracking-wider mb-8 hover:bg-brand-500/20 transition-colors cursor-default">
+                    What sets us apart
+                </div>
+                <h2 class="text-4xl md:text-5xl font-heading font-bold mb-6">
+                    More Than a Text Editor
+                </h2>
+                <p class="text-lg text-white/60 leading-relaxed">
+                    We've built a true development environment that understands your projects, streamlines your workflow, and brings desktop-class power to your fingertips.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1: Local Server -->
+                <div class="spotlight-card relative p-8 rounded-3xl bg-white/5 border border-white/10 overflow-hidden scroll-fade-in" data-scroll-delay="100">
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-600 to-brand-500 mb-6 flex items-center justify-center text-white">
+                            <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                                <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold font-heading mb-3 text-white">True Local Server</h3>
+                        <p class="text-white/60 text-sm leading-relaxed">
+                            Test with confidence. Our editor runs a genuine local server, ensuring relative paths for images, scripts, and assets work flawlessly.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Context-Aware AI -->
+                <div class="spotlight-card relative p-8 rounded-3xl bg-white/5 border border-white/10 overflow-hidden scroll-fade-in" data-scroll-delay="200">
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-purple-500 mb-6 flex items-center justify-center text-white">
+                           <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v0A2.5 2.5 0 0 1 9.5 7v0A2.5 2.5 0 0 1 7 4.5v0A2.5 2.5 0 0 1 9.5 2z"></path>
+                                <path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v0A2.5 2.5 0 0 1 14.5 7v0A2.5 2.5 0 0 1 12 4.5v0A2.5 2.5 0 0 1 14.5 2z"></path>
+                                <path d="M12 14.5a2.5 2.5 0 0 1 2.5-2.5v0a2.5 2.5 0 0 1 2.5-2.5v0a2.5 2.5 0 0 1 2.5 2.5v0a2.5 2.5 0 0 1-2.5 2.5"></path>
+                                <path d="M12 14.5a2.5 2.5 0 0 0-2.5-2.5v0a2.5 2.5 0 0 0-2.5-2.5v0a2.5 2.5 0 0 0-2.5 2.5v0a2.5 2.5 0 0 0 2.5 2.5z"></path>
+                                <path d="M12 22a2.5 2.5 0 0 0 2.5-2.5v0a2.5 2.5 0 0 0-2.5-2.5v0a2.5 2.5 0 0 0-2.5 2.5v0a2.5 2.5 0 0 0 2.5 2.5z"></path>
+                                <path d="M12 12v2.5"></path>
+                                <path d="M12 7v2.5"></path>
+                                <path d="m14.5 9.5 1.5-1.5"></path>
+                                <path d="m8 8 1.5 1.5"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold font-heading mb-3 text-white">Context-Aware AI</h3>
+                        <p class="text-white/60 text-sm leading-relaxed">
+                            Our AI understands your entire project, providing accurate assistance for debugging, refactoring, and code generation.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Secure & Portable -->
+                <div class="spotlight-card relative p-8 rounded-3xl bg-white/5 border border-white/10 overflow-hidden scroll-fade-in" data-scroll-delay="300">
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-default to-accent-light mb-6 flex items-center justify-center text-white">
+                            <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold font-heading mb-3 text-white">Secure &amp; Portable</h3>
+                        <p class="text-white/60 text-sm leading-relaxed">
+                           Package your entire project into a single `.webide` file for secure backups, versioning, and seamless collaboration.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Demo Section -->
+    <section id="demo" class="py-20 relative bg-black/20">
+        <div class="container mx-auto max-w-7xl px-6">
+             <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4 scroll-fade-in" data-scroll-delay="0">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-heading font-bold">Try it yourself</h2>
+                    <p class="text-white/60 mt-2">Experience the editor engine directly in your browser.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button id="insertStarter" class="px-4 py-2 text-sm rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition hover:border-white/20">Load Template</button>
+                    <button id="downloadZip" class="px-4 py-2 text-sm rounded-lg bg-brand-600 text-white hover:bg-brand-500 transition shadow-lg shadow-brand-900/20">Download HTML</button>
+                </div>
+            </div>
+
+            <!-- Editor Window -->
+            <div class="rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#0f172a] flex flex-col h-[500px] md:h-[600px] scroll-fade-in" data-scroll-delay="100">
+                <!-- Toolbar -->
+                <div class="bg-[#1e293b] px-4 py-3 border-b border-white/5 flex items-center justify-between shrink-0">
+                    <div class="flex items-center gap-2">
+                        <div class="flex gap-1.5">
+                            <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+                            <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+                            <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+                        </div>
+                    </div>
+                    <div class="flex bg-black/30 rounded-lg p-1 gap-1">
+                        <button id="tabEditor" class="px-4 py-1.5 text-xs font-medium text-white bg-white/10 rounded shadow-sm transition-all">Editor</button>
+                        <button id="tabPreview" class="px-4 py-1.5 text-xs font-medium text-white/50 hover:text-white transition-all">Run Preview</button>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="flex-1 relative w-full overflow-hidden">
+                    <div id="viewEditor" class="absolute inset-0 flex flex-col bg-[#0b1120] z-10">
+                        <textarea id="demoEditor" class="flex-1 w-full bg-[#0b1120] p-6 text-sm font-mono leading-relaxed text-gray-300 focus:outline-none resize-none selection:bg-brand-500/30" spellcheck="false">&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;style&gt;
+        body {
+            background: #0f172a;
+            color: white;
+            font-family: system-ui, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+        }
+        h1 {
+            margin: 0 0 1rem 0;
+            background: linear-gradient(to right, #2dd4bf, #38bdf8);
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: 2.5rem;
+        }
+        button {
+            background: #38bdf8;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 99px;
+            color: #0f172a;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(56, 189, 248, 0.4); }
+        button:active { transform: scale(0.95); }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="card"&gt;
+        &lt;h1&gt;Web IDE&lt;/h1&gt;
+        &lt;p&gt;Edit code live.&lt;/p&gt;
+        &lt;button onclick="alert('Hello World!')"&gt;Click Me&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+                    </div>
+                    <div id="viewPreview" class="absolute inset-0 bg-white hidden z-0">
+                         <iframe id="demoPreview" class="w-full h-full border-none"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Offer Code -->
+    <section id="offer-code" class="py-20 px-6">
+        <div class="mx-auto max-w-4xl scroll-fade-in" data-scroll-delay="0">
+            <div class="relative rounded-[2rem] offer-card-bg border border-white/10 p-1 overflow-hidden group">
+                <!-- Decorative Gradients -->
+                <div class="absolute -top-20 -left-20 w-64 h-64 bg-brand-500/20 rounded-full blur-3xl group-hover:bg-brand-500/30 transition duration-700"></div>
+                <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-accent-light/20 rounded-full blur-3xl group-hover:bg-accent-light/30 transition duration-700"></div>
+                
+                <div class="relative offer-card-inner backdrop-blur-xl rounded-[1.8rem] p-10 md:p-16 text-center">
+                    <h2 class="text-3xl md:text-5xl font-bold mb-6 font-heading">Unlock Pro Features</h2>
+                    <p class="text-white/60 mb-10 text-lg max-w-xl mx-auto">Use this special code to unlock premium capabilities and increase your AI request limits for free.</p>
+                    
+                    <div class="flex flex-col items-center justify-center gap-6">
+                        <div class="relative w-full max-w-lg group/code cursor-pointer">
+                            <!-- Glow effect -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-brand-500 to-accent-light blur-xl opacity-20 group-hover/code:opacity-40 transition duration-500"></div>
+                            
+                            <!-- The Box -->
+                            <div class="relative px-8 py-6 offer-code-box border border-white/10 rounded-2xl flex flex-col items-center justify-center gap-3 text-center transition-all duration-300 group-hover/code:border-white/20" style="min-height: 140px;">
+                                
+                                <!-- Tech Decoration Corners -->
+                                <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white/10 rounded-tl-lg group-hover/code:border-brand-500/50 transition-colors"></div>
+                                <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-white/10 rounded-tr-lg group-hover/code:border-brand-500/50 transition-colors"></div>
+                                <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-white/10 rounded-bl-lg group-hover/code:border-brand-500/50 transition-colors"></div>
+                                <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-white/10 rounded-br-lg group-hover/code:border-brand-500/50 transition-colors"></div>
+
+                                <!-- Label -->
+                                <span class="text-[10px] uppercase tracking-[0.25em] text-white/30 font-bold">Secure Vault</span>
+
+                                <!-- Placeholder -->
+                                <div id="offerCodePlaceholder" class="flex flex-col items-center gap-2 transition-all duration-300">
+                                     <svg class="w-6 h-6 text-white/20 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                     <span class="text-white/40 font-mono text-sm">[ CODE ENCRYPTED ]</span>
+                                     <span class="text-white/20 text-xs">Tap "Get Code" to decrypt</span>
+                                </div>
+
+                                <!-- The Code -->
+                                <span class="absolute font-mono text-3xl md:text-5xl tracking-[0.15em] font-bold select-all offer-code-text text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-200 to-accent-light opacity-0 pointer-events-none scale-90 blur-sm transition-all duration-500 ease-out" id="offerCodeText">W5B7I4EM8K9</span>
+                            </div>
+                        </div>
+
+                        <button id="offerCodeBtn" data-state="get" class="flex items-center gap-2 px-6 py-3 rounded-xl offer-copy-btn font-bold transition shadow-lg shadow-white/10 active:scale-95">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            <span id="offerBtnText">Get Code</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Footer (Google Style) -->
+    <footer class="border-t border-white/10 bg-[#050505] pt-16 pb-8 font-sans">
+        <div class="container mx-auto max-w-7xl px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-16">
+                <!-- Brand Column -->
+                <div class="col-span-2 lg:col-span-2">
+                    <a href="#" class="flex items-center gap-2 mb-6">
+                        <img src="assets/icon/webidesqaureicon.jpg" alt="Web IDE" class="w-8 h-8 rounded-lg border border-white/10">
+                        <span class="text-xl font-heading font-bold text-white">Web IDE</span>
+                    </a>
+                    <p class="text-white/50 text-sm leading-relaxed max-w-xs mb-6">
+                        The professional mobile code editor for developers who build, test, and ship from anywhere.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-white/40 hover:text-white transition"><span class="sr-only">Twitter</span><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
+                        <a href="#" class="text-white/40 hover:text-white transition"><span class="sr-only">GitHub</span><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+                        <a href="#" class="text-white/40 hover:text-white transition"><span class="sr-only">Discord</span><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></a>
+                    </div>
+                </div>
+
+                <!-- Links Column 1 -->
+                <div>
+                    <h4 class="font-bold text-white mb-6">Product</h4>
+                    <ul class="space-y-4 text-sm text-white/60">
+                        <li><a href="#features" class="hover:text-brand-400 transition">Features</a></li>
+                        <li><a href="#demo" class="hover:text-brand-400 transition">Live Demo</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition">Showcase</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition">Changelog</a></li>
+                        <li><a href="https://apps.apple.com/us/app/web-ide/id6751813522" class="hover:text-brand-400 transition">Download</a></li>
+                    </ul>
+                </div>
+
+                <!-- Links Column 2 -->
+                <div>
+                    <h4 class="font-bold text-white mb-6">Resources</h4>
+                    <ul class="space-y-4 text-sm text-white/60">
+                        <li><a href="pages/docs/index.html" class="hover:text-brand-400 transition">Docs</a></li>
+                        <li><a href="pages/blog/index.html" class="hover:text-brand-400 transition">Blog</a></li>
+                        <li><a href="pages/blog/posts/getting-started.html" class="hover:text-brand-400 transition">Getting Started</a></li>
+                        <li><a href="https://whatsapp.com/channel/0029VbBN8T76GcG5S3vmz22G" class="hover:text-brand-400 transition">Community</a></li>
+                        <li><a href="pages/contact/index.html" class="hover:text-brand-400 transition">Help Center</a></li>
+                    </ul>
+                </div>
+
+                <!-- Links Column 3 -->
+                <div>
+                    <h4 class="font-bold text-white mb-6">Company</h4>
+                    <ul class="space-y-4 text-sm text-white/60">
+                        <li><a href="pages/about/index.html" class="hover:text-brand-400 transition">About</a></li>
+                        <li><a href="pages/contact/index.html" class="hover:text-brand-400 transition">Contact</a></li>
+                        <li><a href="pages/privacy/index.html" class="hover:text-brand-400 transition">Privacy</a></li>
+                        <li><a href="pages/terms/index.html" class="hover:text-brand-400 transition">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/40">
+                <div class="flex items-center gap-6">
+                    <span>© <span id="year"></span> Web IDE Inc.</span>
+                    <a href="pages/privacy/index.html" class="hover:text-white transition">Privacy</a>
+                    <a href="pages/terms/index.html" class="hover:text-white transition">Terms</a>
+                </div>
+                
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/5 hover:border-white/20 transition cursor-pointer group">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="text-white/60 group-hover:text-white" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    <span class="text-white/60 group-hover:text-white font-medium">English (US)</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <button id="theme-toggle" class="fixed bottom-6 right-6 z-[99] w-14 h-14 rounded-full bg-gray-800 text-white flex items-center justify-center shadow-lg transition-transform duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-4 focus:ring-offset-main focus:ring-brand-500">
+        <svg id="theme-toggle-dark-icon" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+        <svg id="theme-toggle-light-icon" class="h-6 w-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+        </svg>
+    </button>
+
+    <script src="script.js" defer=""></script>
+
+<script src="pages/docs/script.js"></script><script src="pages/blog/script.js"></script><script src="pages/blog/actions/interactions.js"></script><script src="pages/about/script.js"></script><script src="pages/contact/script.js"></script></body></html>
